@@ -1,20 +1,82 @@
 This tutorial was adapted from the [454 Overview Tutorial: de novo OTU picking and diversity analyses using 454 data](http://qiime.org/tutorials/tutorial.html)
+
 ###Learning objectives
+* Introduce the workflow of QIIME
+* 
 
 Data for this tutorial is from the paper by FAC Lopes *et al*.
 [Microbial Community Profile and Water Quality in a Protected Area of the Caatinga Biome](http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0148296)
-Go [here for data preparation] of the NCBI SRA samples.
+Go here for [data preparation](datapreparation.md) of the NCBI SRA samples.
+
+This QIIME analysis explains how to apply de novo OTU picking and diversity analysis to 16S amplicon data. In 1985, the National Park of Chapada Diamantina (PNCD) was created to prevent environmental degradation. The presence of bacteria capable of pesticide degradation and assimilation, evidencing possible anthropogenic impacts on the Caatinga. The data was collected to evaluate the effect of PNCD protection on the water quality and microbial community diversity of this river by analyzing water samples obtained from points located inside and outside the PNCD in both wet and dry seasons. We will be analyzing the data with a modified workflow for the workshop.
+
+Here is a workflow to follow for the analysis we are going to perform:
+(insert image)
+
+#### Getting into your directory
+Here we will use commands that we learned in the earlier session to get into the directory (file) that holds our `.fasta`, `.fna` and `mapping.txt` files. This directory will hold all files we will be using throughout the analysis.
 
 #### Step 1. Identifying the version of macqiime
+In the paper under Materials and Methods 'Polymerase chain reaction, 16S rRNA gene amplicon sequencing, and sequence analysis' section, the authors analyzed the sequences using QIIME 1.7.0 software. On our computers we will be checking the version of our QIIME. This will impact the availability of certain scripts and parameters. 
 
+To initialize macqiime, type the command:
 ```
-print_qiime_config.py –t
+$ macqiime
 ```
+In this we can begin to execute a script `.py` to check the version. QIIME has its own script to check this. We are going to see the options that come with this script. Remember `-h` was used to check the parameters/arguments necessary.
+```
+$ print_qiime_config.py –h
+Usage: print_qiime_config.py [options] {}
+
+[] indicates optional input (order unimportant)
+{} indicates required input (order unimportant)
+
+Print QIIME configuration details and optionally perform tests of the QIIME base or full install.
+
+Example usage: 
+Print help message and exit
+ print_qiime_config.py -h
+
+Example 1: Print basic QIIME configuration details
+ print_qiime_config.py
+
+Example 2: Print basic QIIME configuration details and test the base QIIME installation
+ print_qiime_config.py -t
+
+Example 3: Print basic QIIME configuration details and test the full QIIME installation
+ print_qiime_config.py -tf
+
+Options:
+  --version             show program's version number and exit
+  -h, --help            show this help message and exit
+  -v, --verbose         Print information during execution -- useful for
+                        debugging [default: False]
+  -t, --test            Test the QIIME install and configuration [default:
+                        False]
+  -f, --qiime_full_install
+                        If passed, report on dependencies required for the
+                        QIIME full install. To perform tests of the QIIME full
+                        install, you must also pass -t. [default: False]
+```
+We will use Example 2 to check the version and run a test on the installation. Type:
+```
+$ print_qiime_config.py –t
+```
+Read the output and write down the version. How many tests were performed?
+
 #### Step 2. Validate the format of the mapping file
+The important file for this analysis is the mapping file. To ensure it is correctly formatted the script `validate_mapping_file.py` is used. In the script below we have two options:
+`-m` and `-o`
 ```
-validate_mapping_file.py -m watertest_Map.txt -o mapping_output
+$ validate_mapping_file.py -m watertest_Map.txt -o mapping_output
+No errors or warnings were found in mapping file.
 ```
+This script will print a message indicating whether or not problems were found in the mapping file. Here there isn't a problem.
+
+There are four output files. If there are errors, the HTML file shows the location of errors and warnings and a plain text log file will also be created. Errors will cause fatal problems with subsequent scripts and must be corrected before moving forward. Warnings will not cause fatal problems, but it is encouraged that you fix these problems as they are often indicative of typos in your mapping file. A file ending with _corrected.txt will have a copy of the mapping file with invalid characters replaced by underscores.
+
 #### Step 3. Quality of the reads 
+The next steps are to assess the quality of the reads coming off the sequencer. The script to use here is `quality_scores_plot.py` which requires the `.qual` file.
 ```
 quality_scores_plot.py -q P1P2P3_rep1_wetdry.qual -o quality_histogram
 ```
