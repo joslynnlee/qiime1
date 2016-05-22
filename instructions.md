@@ -14,7 +14,7 @@ Here is a workflow to follow for the analysis we are going to perform:
 (insert image)
 
 #### Getting into your directory
-Here we will use commands that we learned in the earlier session to get into the directory (file) that holds our `.fasta`, `.fna` and `mapping.txt` files. This directory will hold all files we will be using throughout the analysis.
+Here we will use commands that we learned in the earlier session to get into the directory (file) that holds our `.fasta`, `.fna` and `mapping.txt` files. This directory will hold all files we will be using throughout the analysis. 
 
 #### Step 1. Identifying the version of macqiime
 In the paper under Materials and Methods 'Polymerase chain reaction, 16S rRNA gene amplicon sequencing, and sequence analysis' section, the authors analyzed the sequences using QIIME 1.7.0 software. On our computers we will be checking the version of our QIIME. This will impact the availability of certain scripts and parameters. 
@@ -67,6 +67,7 @@ Read the output and write down the version. How many tests were performed?
 #### Step 2. Validate the format of the mapping file
 The important file for this analysis is the mapping file. To ensure it is correctly formatted the script `validate_mapping_file.py` is used. In the script below we have two options:
 `-m` and `-o`
+The mapping file `watertest_Map.txt` can be found in the folder `//`.
 ```
 $ validate_mapping_file.py -m watertest_Map.txt -o mapping_output
 No errors or warnings were found in mapping file.
@@ -76,40 +77,67 @@ This script will print a message indicating whether or not problems were found i
 There are four output files. If there are errors, the HTML file shows the location of errors and warnings and a plain text log file will also be created. Errors will cause fatal problems with subsequent scripts and must be corrected before moving forward. Warnings will not cause fatal problems, but it is encouraged that you fix these problems as they are often indicative of typos in your mapping file. A file ending with _corrected.txt will have a copy of the mapping file with invalid characters replaced by underscores.
 
 #### Step 3. Quality of the reads 
-The next steps are to assess the quality of the reads coming off the sequencer. The script to use here is `quality_scores_plot.py` which requires the `.qual` file.
+The next step is to assess the quality of the reads coming off the sequencer. The script to use here is `quality_scores_plot.py` which requires the `.qual` file. Here the option/parameter `'q` calls the `.qual` file and `o` generates the output file `quality_histogram.`
 ```
-quality_scores_plot.py -q P1P2P3_rep1_wetdry.qual -o quality_histogram
+$ quality_scores_plot.py -q P1P2P3_rep1_wetdry.qual -o quality_histogram
+quality_histogram
+Suggested nucleotide truncation position (None if quality score average did not fall below the minimum score parameter): 439
 ```
+Generate two histograms of sequence quality scores. High-quality read length and abundance are the primary factors differentiating correct from erroneous reads produced by sequencing instruments.
+
 #### Step 4. Preprocess the sequence reads 
+Assign the reads to samples based on their nucleotide barcode. Perform quality filtering, removing any low quality or ambiguous reads.
 ```
-split_libraries.py -b 10 -m watertest_Map.txt -f P1P2P3_rep1_wetdry.fna -q P1P2P3_rep1_wetdry.qual -o split_library_output
+$ split_libraries.py -b 10 -m watertest_Map.txt -f P1P2P3_rep1_wetdry.fna -q P1P2P3_rep1_wetdry.qual -o split_library_output
 ```
+This will create three files in the new directory `split_library_output/`. To view them let's look into the output file:
+```
+$ cd split_library_output/
+```
+Now we need to list the files. Type in:
+```
+$ ls
+```
+We should see three files.
+
+`split_library_log.txt `: This file contains the summary of demultiplexing and quality filtering, including the number of reads detected for each sample and a brief summary of any reads that were removed due to quality considerations.
+`histograms.txt`: This tab-delimited file shows the number of reads at regular size intervals before and after splitting the library.
+`seqs.fna`: This is a fasta formatted file where each sequence is renamed according to the sample it came from. The header line also contains the name of the read in the input fasta file and information on any barcode errors that were corrected.
+
+Let's look at the `split_library_log.txt` file to find out more information about. Type in `nano`:
+```
+$ nano split_library_log.txt
+```
+Write down the number of sequences before and after. 
+
+To exit out of nano, CRTL-X will get you out of nano view. 
+
 #### Step 5. Build an operational taxonomic unit (OTU) table 
 ```
-pick_de_novo_otus.py -i split_library_output/seqs.fna -o otus
+$ pick_de_novo_otus.py -i split_library_output/seqs.fna -o otus
 ```
 #### Step 6. Summarize sample OTU table/counts 
 ```
-biom summarize-table -i otus/otu_table.biom –o otus/stats_OTU_table.txt
+$ biom summarize-table -i otus/otu_table.biom –o otus/stats_OTU_table.txt
 ```
 #### Step 7. Summarize communities by taxonomic composition 
 ```
-summarize_taxa_through_plots.py -i otus/otu_table.biom -m watertest_Map.txt -o taxa_summary
+$ summarize_taxa_through_plots.py -i otus/otu_table.biom -m watertest_Map.txt -o taxa_summary
 ```
 #### Step 8. Make a taxonomy heatmap 
 ```
-make_otu_heatmap.py -i taxa_summary/otu_table_L5.biom -c Treatment -m watertest_Map.txt -o taxa_summary/otu_table_L5_heatmap.pdf
+$ make_otu_heatmap.py -i taxa_summary/otu_table_L5.biom -c Treatment -m watertest_Map.txt -o taxa_summary/otu_table_L5_heatmap.pdf
 ```
 #### Step 9. Analyzing the OTU table: alpha diversity 
 ```
-alpha_rarefaction.py -i otus/otu_table.biom -m watertest_Map.txt -t otus/rep_set.tre --retain_intermediate_files -e #### -o arare_intermediate_####
+$ alpha_rarefaction.py -i otus/otu_table.biom -m watertest_Map.txt -t otus/rep_set.tre --retain_intermediate_files -e #### -o arare_intermediate_####
 ```
 #### Step 10. Analyzing the OTU table: beta diversity 
 ```
-beta_diversity_through_plots.py -i otus/otu_table.biom -m watertest_Map.txt -t otus/rep_set.tre -e 100 -o beta_div100
+$ beta_diversity_through_plots.py -i otus/otu_table.biom -m watertest_Map.txt -t otus/rep_set.tre -e 100 -o beta_div100
 ```
 #### Step 11. Generate 3-D biplots for beta diversity
 ```
-make_emperor.py -i beta_div100/unweighted_unifrac_pc.txt -m watertest_Map.txt -t taxa_summary/otu_table_L5.txt --n_taxa_to_keep 10 -o biplots_betadiv_taxa10
+$ make_emperor.py -i beta_div100/unweighted_unifrac_pc.txt -m watertest_Map.txt -t taxa_summary/otu_table_L5.txt --n_taxa_to_keep 10 -o biplots_betadiv_taxa10
 ```
 
