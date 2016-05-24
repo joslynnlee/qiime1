@@ -1,8 +1,9 @@
 This tutorial was adapted from the [454 Overview Tutorial: de novo OTU picking and diversity analyses using 454 data](http://qiime.org/tutorials/tutorial.html)
 
 ###Learning objectives
-* Introduce the workflow of QIIME
-* 
+* Understand the workflow of QIIME
+* Understand the input and output files of QIIME
+* Generate a heatmap, bar and PCA plot
 
 Data for this tutorial is from the paper by FAC Lopes *et al*.
 [Microbial Community Profile and Water Quality in a Protected Area of the Caatinga Biome](http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0148296)
@@ -14,18 +15,41 @@ Here is a workflow to follow for the analysis we are going to perform:
 (insert image)
 
 #### Getting into your directory
-Here we will use commands that we learned in the earlier session to get into the directory (file) that holds our `.fasta`, `.fna` and `mapping.txt` files. This directory will hold all files we will be using throughout the analysis. 
+Here we will use commands that we learned in the earlier session to get into the directory (file) that holds our `.fna`, `.qual` and `mapping.txt` files. This directory will hold all files we will be using throughout the analysis. 
+
+The first step is to open 'Terminal.app' by going along the toolbar, its the black box icon. When you open, you will see the following line and a `$`.
+```
+train12-osx:~ train12$
+```
+When the terminal is ready, the `$` will be available. What comes in front is the computer and username. Type in `ls`. 
+```
+train12-osx:~ train12$ ls
+16S_analysis	Documents	Movies		Public
+Applications	Downloads	Music		QIIME_analysis
+Desktop		Library		Pictures
+```
+Remember that `ls` is list. Anything in your filesystem will be returned. The files we want will be in the `QIIME_analysis` folder. We need to `cd` or `change directory` into `QIIME_analysis.`
+```
+train12-osx:~ train12$ cd QIIME_analysis/
+```
+There won't be anything displayed. We can use the `ls` command to display what is in the directory.
+```
+train12-osx:~ train12$ ls
+```
+What files do you see?
+
+Now that we have the files, we can move on to initialize the program `macqiime`!
 
 #### Step 1. Identifying the version of macqiime
-In the paper under Materials and Methods 'Polymerase chain reaction, 16S rRNA gene amplicon sequencing, and sequence analysis' section, the authors analyzed the sequences using QIIME 1.7.0 software. On our computers we will be checking the version of our QIIME. This will impact the availability of certain scripts and parameters. 
+In the paper, under **Materials and Methods** 'Polymerase chain reaction, 16S rRNA gene amplicon sequencing, and sequence analysis' section, the authors analyzed the sequences using QIIME 1.7.0 software. On our computers we will be checking the version of our QIIME. This will impact the availability of certain scripts and parameters. 
 
 To initialize macqiime, type the command:
 ```
-$ macqiime
+train12$ source /macqiime/configs/bash_profile.txt
 ```
 In this we can begin to execute a script `.py` to check the version. QIIME has its own script to check this. We are going to see the options that come with this script. Remember `-h` was used to check the parameters/arguments necessary.
 ```
-$ print_qiime_config.py –h
+MacQIIME train12-osx:QIIME_analysis $ print_qiime_config.py -h
 Usage: print_qiime_config.py [options] {}
 
 [] indicates optional input (order unimportant)
@@ -60,21 +84,27 @@ Options:
 ```
 We will use Example 2 to check the version and run a test on the installation. Type:
 ```
-$ print_qiime_config.py –t
+MacQIIME train12-osx:QIIME_analysis $ print_qiime_config.py -t
 ```
 Read the output and write down the version. How many tests were performed?
 
 #### Step 2. Validate the format of the mapping file
-The important file for this analysis is the mapping file. To ensure it is correctly formatted the script `validate_mapping_file.py` is used. In the script below we have two options:
-`-m` and `-o`
-The mapping file `watertest_Map.txt` can be found in the folder `/insertdirectorypathname/`.
+The important file for this analysis is the mapping file. To ensure it is correctly formatted the script `validate_mapping_file.py` is used. For this script, there are two options:
 ```
-$ validate_mapping_file.py -m watertest_Map.txt -o mapping_output
+-m Metadata mapping filepath [REQUIRED]
+-o Required output directory for log file, corrected mapping file, and html file.
+```
+The mapping file `watertest_Map.txt` can be found in the folder `QIIME_analysis/`. We need to be sure we are in the file look at what is listed infront of the `$`.
+```
+MacQIIME train12-osx:QIIME_analysis $
+MacQIIME train12-osx:QIIME_analysis $ validate_mapping_file.py -m watertest_Map.txt -o mapping_output
 No errors or warnings were found in mapping file.
 ```
-This script will print a message indicating whether or not problems were found in the mapping file. Here there isn't a problem.
-
-There are four output files. If there are errors, the HTML file shows the location of errors and warnings and a plain text log file will also be created. Errors will cause fatal problems with subsequent scripts and must be corrected before moving forward. Warnings will not cause fatal problems, but it is encouraged that you fix these problems as they are often indicative of typos in your mapping file. A file ending with _corrected.txt will have a copy of the mapping file with invalid characters replaced by underscores.
+This script will print a message indicating whether or not problems were found in the mapping file. Here there isn't a problem. To view output files, type:
+```
+MacQIIME train12-osx:QIIME_analysis $ ls mapping_output
+```
+If there are errors, the HTML file shows the location of errors and warnings and a plain text log file will also be created. Errors will cause fatal problems with subsequent scripts and must be corrected before moving forward. Warnings will not cause fatal problems, but it is encouraged that you fix these problems as they are often indicative of typos in your mapping file. A file ending with _corrected.txt will have a copy of the mapping file with invalid characters replaced by underscores.
 
 #### Step 3. Quality of the reads 
 The next step is to assess the quality of the reads coming off the sequencer. The script to use here is `quality_scores_plot.py` which requires the `.qual` file. Here the option/parameter `-q` calls the `.qual`quality scores file and `o` generates the output file `quality_histogram.`
