@@ -3,6 +3,6 @@ Identifying the microbial community profile in a protected area of the Caatinga 
 
 We will use the two pages for analysis:
 
-![Data preparation](qiime_watersamples/datapreparation.md) 
+![Data preparation](datapreparation.md) 
 
 ![QIIME instructions](instructions.md)  
