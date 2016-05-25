@@ -1,6 +1,6 @@
 {
-  "name": "Qiime watersamples",
+  "name": "QIIME watersamples",
   "tagline": "Identifying the microbial community profile in a protected area of the Caatinga biome.",
-  "body": "### QIIME Analysis\r\nIdentifying the microbial community profile in a protected area of the Caatinga biome.\r\n\r\n### Table of Contents\r\n* Getting started\r\n* Data preparation\r\n* [QIIME workflow instructions](instructions.md)",
+  "body": "### QIIME Analysis\r\nIdentifying the microbial community profile in a protected area of the Caatinga biome.",
   "note": "Don't delete this file! It's used internally to help with page regeneration."
 }
