@@ -135,6 +135,10 @@ We should see three files:
 * `histograms.txt`: This tab-delimited file shows the number of reads at regular size intervals before and after splitting the library.
 * `seqs.fna`: This is a fasta formatted file where each sequence is renamed according to the sample it came from. The header line also contains the name of the read in the input fasta file and information on any barcode errors that were corrected.
 
+```
+MacQIIME train12-osx:split_library_output $ cd .. 
+```
+
 #### Step 5. Build an operational taxonomic unit (OTU) table 
 In a de novo OTU picking process, reads are clustered against one another without any external reference sequence collection. `de novo OTU picking.py` is the primary interface for de novo OTU picking in QIIME. 
 ```
