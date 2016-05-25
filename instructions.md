@@ -109,7 +109,7 @@ If there are errors, the HTML file shows the location of errors and warnings and
 #### Step 3. Quality of the reads 
 The next step is to assess the quality of the reads coming off the sequencer. The script to use here is `quality_scores_plot.py` which requires the `.qual` file. Here the option/parameter `-q` calls the `.qual`quality scores file and `o` generates the output file `quality_histogram.`
 ```
-$ quality_scores_plot.py -q P1P2P3_rep1_wetdry.qual -o quality_histogram
+MacQIIME train12-osx:QIIME_analysis $ quality_scores_plot.py -q P1P2P3_rep1_wetdry.qual -o quality_histogram
 quality_histogram
 Suggested nucleotide truncation position (None if quality score average did not fall below the minimum score parameter): 439
 ```
@@ -119,37 +119,26 @@ Generate two histograms of sequence quality scores. High-quality read length and
 (The next task is to assign the multiplexed reads to samples based on their nucleotide barcode (this is known as demultiplexing). This step also performs quality filtering based on the characteristics of each sequence, removing any low quality or ambiguous reads.)
 Assign the reads to samples based on their nucleotide barcode. Perform quality filtering, removing any low quality or ambiguous reads.
 ```
-$ split_libraries.py -b 10 -m watertest_Map.txt -f P1P2P3_rep1_wetdry.fna -q P1P2P3_rep1_wetdry.qual -o split_library_output
+MacQIIME train12-osx:QIIME_analysis $ split_libraries.py -b 10 -m watertest_Map.txt -f P1P2P3_rep1_wetdry.fna -q P1P2P3_rep1_wetdry.qual -o split_library_output
 ```
 This will create three files in the new directory `split_library_output/`. To view them let's look into the output file:
 ```
-$ cd split_library_output/
+MacQIIME train12-osx:QIIME_analysis $ cd split_library_output/
 ```
 Now we need to list the files. Type in:
 ```
-$ ls
+MacQIIME train12-osx:split_library_output $ ls
+histograms.txt        seqs.fna              split_library_log.txt
 ```
 We should see three files:
 * `split_library_log.txt `: This file contains the summary of demultiplexing and quality filtering, including the number of reads detected for each sample and a brief summary of any reads that were removed due to quality considerations.
 * `histograms.txt`: This tab-delimited file shows the number of reads at regular size intervals before and after splitting the library.
 * `seqs.fna`: This is a fasta formatted file where each sequence is renamed according to the sample it came from. The header line also contains the name of the read in the input fasta file and information on any barcode errors that were corrected.
 
-Let's look at the `split_library_log.txt` file to find out more information about. Type in `nano`:
-```
-$ nano split_library_log.txt
-```
-The first several lines of the `split_library_log.txt` have the number of raw input sequences and the total number seqs written. Write down the number of sequences before and after.
-
-Another line to pay attention to is the the line:
-````
-Sample ct min/max/mean: 3369 / 51312 / 13153.83
-```
-The min will be important for Step 9. To exit out of nano, CRTL-X will get you out of nano view. 
-
 #### Step 5. Build an operational taxonomic unit (OTU) table 
 In a de novo OTU picking process, reads are clustered against one another without any external reference sequence collection. `de novo OTU picking.py` is the primary interface for de novo OTU picking in QIIME. 
 ```
-$ pick_de_novo_otus.py -i split_library_output/seqs.fna -o otus
+MacQIIME train12-osx:QIIME_analysis $ pick_de_novo_otus.py -i split_library_output/seqs.fna -o otus
 ```
 (all of the sequences from all of the samples will be clustered into Operational Taxonomic Units (OTUs) based on their sequence similarity. OTUs in QIIME are clusters of sequences, frequently intended to represent some degree of taxonomic relatedness.Since each OTU may be made up of many related sequences, we will pick a representative sequence from each OTU for downstream analysis. This representative sequence will be used for taxonomic identification of the OTU and phylogenetic alignment. QIIME uses the OTU file created above and extracts a representative sequence from the fasta file by one of several methods.)
 
@@ -157,27 +146,51 @@ $ pick_de_novo_otus.py -i split_library_output/seqs.fna -o otus
 To view summary statistics of the OTU table, run:
 the sequences present are fairly evenly distributed among the 9 microbial communities.
 ```
-$ biom summarize-table -i otus/otu_table.biom –o otus/stats_OTU_table.txt
+MacQIIME train12-osx:QIIME_analysis $ biom summarize-table -i otus/otu_table.biom -o otus/otu_table_stats.txt
 ```
+Let's look at the `otu_table_stats.txt` file to find out more information about. Type in `nano`:
+```
+MacQIIME train12-osx:QIIME_analysis $ nano otus/otu_table_stats.txt
+```
+The first several lines of the `otu_table_stats.txt` have the number of raw input sequences and the total number seqs written. Write down the number of sequences before and after.
+
+Another line to pay attention to the `Counts/Sample summary` line:
+````
+Counts/sample summary:
+ Min: 3369.0
+ Max: 51312.0
+ Median: 6069.500
+ Mean: 13153.833
+ Std. dev.: 17108.171
+ Sample Metadata Categories: None provided
+ Observation Metadata Categories: taxonomy
+```
+The median will be important for Step 9. To exit out of nano, CRTL-X will get you out of nano view. 
+
 #### Step 7. Summarize communities by taxonomic composition 
 You can group OTUs by different taxonomic levels (phylum, class, family, etc.) with the workflow script summarize_taxa_through_plots.py. Note that this process depends directly on the method used to assign taxonomic information to OTUS (see Assigning Taxonomy above):
 ```
-$ summarize_taxa_through_plots.py -i otus/otu_table.biom -m watertest_Map.txt -o taxa_summary
+MacQIIME train12-osx:QIIME_analysis $ summarize_taxa_through_plots.py -i otus/otu_table.biom -m watertest_Map.txt -o taxa_summary
 ```
-The script will generate new tables at various taxonomic levels (we’ll refer to these as taxonomy tables, which are different than OTU tables). For example, the class-level table is located at taxa_summary/otu_table_L3.txt. Each taxonomy table contains the relative abundances of taxa within each sample:
-```
+The script will generate new tables at various taxonomic levels (we’ll refer to these as taxonomy tables, which are different than OTU tables). For example, the genus-level table is located at `taxa_summary/otu_table_L5.txt` and is Figure 3A from the paper. Each taxonomy table contains the relative abundances of taxa within each sample:
 
-```
-To view the resulting charts, open the area or bar chart html file located in the taxa_summary/taxa_summary_plots folder. The following chart shows the taxonomic assignments for each sample as a bar chart. You can mouse-over the plot to see which taxa are contributing to the percentage shown:
+To view the resulting charts, open the area or bar chart html file located in the `taxa_summary/taxa_summary_plots` folder. The following chart shows the taxonomic assignments for each sample as a bar chart. Scroll down to the fifth plot. The kingdom, phylum, class, family, and genus will be listed. You can place your mouse-over the plot to see which taxa are contributing to the percentage shown:
+
+![taxa figure](L5.jpg)
+
+Here we will fill out the table with relative percentages in the workbook. Compare these to the results section of the paper.
+
 #### Step 8. Make a taxonomy heatmap 
-
-FIXED:
-QIIME supports generating heatmap images of BIOM tables (e.g., OTU tables or the taxonomy tables generated in the previous step) with make_otu_heatmap.py. Let’s create a heatmap illustrating class-level abundances on a per-sample basis, where samples are sorted by whether they are from control or fasted mice:
+QIIME supports generating heatmap images of BIOM tables (e.g., OTU tables or the taxonomy tables generated in the previous step) with make_otu_heatmap.py. Let’s create a heatmap illustrating *class-level* abundances on a per-sample basis, where samples are sorted by whether they are from protected area plus wet and dry season:
 
 ```
-$ make_otu_heatmap.py -i taxa_summary/otu_table_L5.biom -c Treatment -m watertest_Map.txt -o taxa_summary/otu_table_L5_heatmap.pdf
+MacQIIME train12-osx:QIIME_analysis $ make_otu_heatmap.py -i taxa_summary/otu_table_L3.biom -c Treatment -m watertest_Map.txt -o taxa_summary/otu_table_L3_heatmap.pdf
 ```
-A PDF file is created as taxa_summary/otu_table_L3_heatmap.pdf. The first four samples are from fasted mice and the last five are from controls. This clearly illustrates class-level differences in the taxonomic composition of the samples:
+A PDF file is created as taxa_summary/otu_table_L3_heatmap.pdf. The first three samples are from WET season and the last three are from DRY season. This clearly illustrates class-level differences in the taxonomic composition of the samples:
+
+![Heatmap](otu_table_L3_heatmap.png)
+
+We can see that the samples aren't completely similar between seasons.
 
 #### Step 9. Analyzing the OTU table: alpha diversity 
 Community ecologists are often interested in computing alpha (or the within-sample) diversity for samples or groups of samples in their study. Here, we will determine the level of alpha diversity in our samples using QIIME’s alpha_rarefaction.py workflow, which performs the following steps:
@@ -188,13 +201,14 @@ Community ecologists are often interested in computing alpha (or the within-samp
 * Generate alpha rarefaction plots (make_rarefaction_plots.py)
 
 Although we could run this workflow with the (sensible) default parameters, this provides an opportunity to illustrate the use of custom parameters in a QIIME workflow. To see what measures of alpha diversity will be computed by default, run:
+What was recorded from Step 6 and for the #### put in the number there.
 ```
-$ alpha_rarefaction.py -i otus/otu_table.biom -m watertest_Map.txt -t otus/rep_set.tre --retain_intermediate_files -e #### -o arare_intermediate_####
+MacQIIME train12-osx:QIIME_analysis $ alpha_rarefaction.py -i otus/otu_table.biom -m watertest_Map.txt -t otus/rep_set.tre --retain_intermediate_files -e #### -o arare_intermediate####
 ```
 To view the alpha rarefaction plots, open the file arare/alpha_rarefaction_plots/rarefaction_plots.html. Once the browser window is open, select the metric PD_whole_tree and the category Treatment, to reveal a plot like the figure below. You can click on the triangle next to each label in the legend to see all the samples that contribute to that category. Below each plot is a table displaying average values for each measure of alpha diversity for each group of samples in the specified category.
 
-Select a metric: PD_whole_tree: `Treatment`
-Show Categories: `INSERT`
+Select a metric: `PD_whole_tree` and Select a Category: `Treatment`
+![Rarefaction Curves](Rarefaction Curves.png)
 
 #### Step 10. Analyzing the OTU table: beta diversity 
 In addition to alpha (or within-sample) diversity, community ecologists are often interested in computing beta (or the between-sample) diversity between all pairs of samples in their study.
@@ -211,18 +225,45 @@ Here, we will calculate beta diversity between our 9 microbial communities using
 We can run the beta_diversity_through_plots.py workflow with the following command, which requires the OTU table (-i) and tree file (-t) from above, the metadata mapping file (-m), and the number of sequences per sample (-e, even sampling depth):
 
 ```
-$ beta_diversity_through_plots.py -i otus/otu_table.biom -m watertest_Map.txt -t otus/rep_set.tre -e 100 -o beta_div100
+MacQIIME train12-osx:QIIME_analysis $ beta_diversity_through_plots.py -i otus/otu_table.biom -m watertest_Map.txt -t otus/rep_set.tre -e 100 -o betadiv_100
 ```
 Beta diversity metrics assess the differences between microbial communities. By default, QIIME calculates both weighted and unweighted UniFrac, which are phylogenetically-aware measures of beta diversity.
 
 The resulting distance matrices (bdiv_even146/unweighted_unifrac_dm.txt and bdiv_even146/weighted_unifrac_dm.txt) are the basis for further analyses and visualizations (e.g., Principal Coordinates Analysis and hierarchical clustering).
 
 #### Step 11. Generate 3-D biplots for beta diversity
-We can add taxa from the taxonomy tables in the taxa_summary/ directory to a 3-D PCoA plot using Emperor’s make_emperor.py. The coordinates of a given taxon are plotted as a weighted average of the coordinates of all samples, where the weights are the relative abundances of the taxon in the samples. The size of the sphere representing a taxon is proportional to the mean relative abundance of the taxon across all samples. The following command creates a biplot displaying the 5 most abundant class-level taxa:
-
+We can add taxa from the taxonomy tables in the taxa_summary/ directory to a 3-D PCoA plot using Emperor’s `make_emperor.py`. The coordinates of a given taxon are plotted as a weighted average of the coordinates of all samples, where the weights are the relative abundances of the taxon in the samples. The **size of the sphere representing a taxon** is proportional to the mean relative abundance of the taxon across all samples. The following command creates a biplot displaying the 5 most abundant class-level taxa:
 ```
-$ make_emperor.py -i beta_div100/unweighted_unifrac_pc.txt -m watertest_Map.txt -t taxa_summary/otu_table_L5.txt --n_taxa_to_keep 10 -o biplots_betadiv_taxa10
+MacQIIME train12-osx:QIIME_analysis $ make_emperor.py -i betadiv_100/unweighted_unifrac_pc.txt -m watertest_Map.txt -t taxa_summary/otu_table_L5.txt --n_taxa_to_keep 10 -o biplots_betadiv_taxa10
 ```
-The resulting html file biplots/index.html shows a biplot similar to this:
-(INSERT) PCoA plot
+The resulting html file biplots/index.html opens up to EMPEROR inside the web browser. Go into the directory and open the `index.html` file. We will compare this to Figure 3C from the paper.
 
+![PCoA plot lab](pcoAPlot2.jpg)
+
+Total relative abundance of taxonomic groups (kingdom, phylum, class, family, and genus)
+
+_A. - k__Bacteria;p__Proteobacteria;c__Betaproteobacteria;o__Burkholderiales;Other_ 
+
+B. - k__Bacteria;p__Proteobacteria;c__Betaproteobacteria;o__Burkholderiales;f__Comamonadaceae
+
+C. - k__Bacteria;p__Proteobacteria;c__Betaproteobacteria;o__Burkholderiales;f__Oxalobacteraceae
+
+D. - k__Bacteria;p__Proteobacteria;c__Betaproteobacteria;o__Rhodocyclales;f__Rhodocyclaceae
+
+_E. - Unassigned;Other;Other;Other;Other_
+
+F. - k__Bacteria;p__Proteobacteria;c__Betaproteobacteria;o__Methylophilales;f__Methylophilaceae
+
+G. - k__Bacteria;p__Proteobacteria;c__Alphaproteobacteria;o__Sphingomonadales;f__Sphingomonadaceae
+
+H. - k__Bacteria;p__Acidobacteria;c__Acidobacteriia;o__Acidobacteriales;f__Koribacteraceae
+
+I. - k__Bacteria;p__Actinobacteria;c__Acidimicrobiia;o__Acidimicrobiales;f__
+
+J. - k__Bacteria;p__Verrucomicrobia;c__[Spartobacteria];o__[Chthoniobacterales];f__[Chthoniobacteraceae]
+
+Questions to answer:
+
+Do we see any P1, P2 and P3 samples grouping together?
+
+Do we find similar bacteria grouping together?
