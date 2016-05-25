@@ -12,7 +12,7 @@ Go here for [data preparation](datapreparation.md) of the NCBI SRA samples.
 This QIIME analysis explains how to apply de novo OTU picking and diversity analysis to 16S amplicon data. In 1985, the National Park of Chapada Diamantina (PNCD) was created to prevent environmental degradation. The presence of bacteria capable of pesticide degradation and assimilation, evidencing possible anthropogenic impacts on the Caatinga. The data was collected to evaluate the effect of PNCD protection on the water quality and microbial community diversity of this river by analyzing water samples obtained from points located inside and outside the PNCD in both wet and dry seasons. We will be analyzing the data with a modified workflow for the workshop.
 
 Here is a workflow to follow for the analysis we are going to perform:
-(insert image)
+(INSERT IMAGE OF WORKFLOW)
 
 #### Getting into your directory
 Here we will use commands that we learned in the earlier session to get into the directory (file) that holds our `.fna`, `.qual` and `mapping.txt` files. This directory will hold all files we will be using throughout the analysis. 
@@ -174,38 +174,37 @@ MacQIIME train12-osx:QIIME_analysis $ summarize_taxa_through_plots.py -i otus/ot
 ```
 The script will generate new tables at various taxonomic levels (we’ll refer to these as taxonomy tables, which are different than OTU tables). For example, the genus-level table is located at `taxa_summary/otu_table_L5.txt` and is Figure 3A from the paper. Each taxonomy table contains the relative abundances of taxa within each sample:
 
-To view the resulting charts, open the area or bar chart html file located in the `taxa_summary/taxa_summary_plots` folder. The following chart shows the taxonomic assignments for each sample as a bar chart. Scroll down to the fifth plot. The kingdom, phylum, class, family, and genus will be listed. You can place your mouse-over the plot to see which taxa are contributing to the percentage shown:
+To view the resulting charts, open the area or bar chart html file located in the `taxa_summary/taxa_summary_plots` folder. The following chart shows the taxonomic assignments for each sample as a bar chart. Scroll down to the fifth plot in the `.html`. The kingdom, phylum, class, family, and genus will be listed. Each genus will be a different color. The most abundant is a beige. 
+**Place your mouse-over the colors in the plot to see which taxa and the associated percentage**:
 
 ![taxa figure](L5.jpg)
 
 Here we will fill out the table with relative percentages in the workbook. Compare these to the results section of the paper.
 
+We will open `Excel.app`. We will highlight the text below the figure and paste it into the spreadsheet. We will do a quick sorting of the data.
+
 #### Step 8. Make a taxonomy heatmap 
-QIIME supports generating heatmap images of BIOM tables (e.g., OTU tables or the taxonomy tables generated in the previous step) with make_otu_heatmap.py. Let’s create a heatmap illustrating *class-level* abundances on a per-sample basis, where samples are sorted by whether they are from protected area plus wet and dry season:
+QIIME supports generating heatmap images of BIOM tables (e.g., OTU tables or the taxonomy tables generated in the previous step) with `make_otu_heatmap.py`. Let’s create a heatmap illustrating *class-level* abundances on a per-sample basis, where samples are sorted by whether they are from protected area plus wet and dry season:
 
 ```
 MacQIIME train12-osx:QIIME_analysis $ make_otu_heatmap.py -i taxa_summary/otu_table_L3.biom -c Treatment -m watertest_Map.txt -o taxa_summary/otu_table_L3_heatmap.pdf
 ```
-A PDF file is created as taxa_summary/otu_table_L3_heatmap.pdf. The first three samples are from WET season and the last three are from DRY season. This clearly illustrates class-level differences in the taxonomic composition of the samples:
+A PDF file is created as `taxa_summary/otu_table_L3_heatmap.pdf`. The first three samples are from WET season and the last three are from DRY season. This clearly illustrates class-level differences in the taxonomic composition of the samples:
 
 ![Heatmap](otu_table_L3_heatmap.png)
 
 We can see that the samples aren't completely similar between seasons.
 
 #### Step 9. Analyzing the OTU table: alpha diversity 
-Community ecologists are often interested in computing alpha (or the within-sample) diversity for samples or groups of samples in their study. Here, we will determine the level of alpha diversity in our samples using QIIME’s alpha_rarefaction.py workflow, which performs the following steps:
+Community ecologists are often interested in computing alpha (or the within-sample) diversity for samples or groups of samples in their study.
 
-* Generate rarefied OTU tables (multiple_rarefactions.py)
-* Compute measures of alpha diversity for each rarefied OTU table (alpha_diversity.py)
-* Collate alpha diversity results (collate_alpha.py)
-* Generate alpha rarefaction plots (make_rarefaction_plots.py)
-
-Although we could run this workflow with the (sensible) default parameters, this provides an opportunity to illustrate the use of custom parameters in a QIIME workflow. To see what measures of alpha diversity will be computed by default, run:
-What was recorded from Step 6 and for the #### put in the number there.
+To see what measures of alpha diversity will be computed by default, run:
 ```
 MacQIIME train12-osx:QIIME_analysis $ alpha_rarefaction.py -i otus/otu_table.biom -m watertest_Map.txt -t otus/rep_set.tre --retain_intermediate_files -e #### -o arare_intermediate####
 ```
-To view the alpha rarefaction plots, open the file arare/alpha_rarefaction_plots/rarefaction_plots.html. Once the browser window is open, select the metric PD_whole_tree and the category Treatment, to reveal a plot like the figure below. You can click on the triangle next to each label in the legend to see all the samples that contribute to that category. Below each plot is a table displaying average values for each measure of alpha diversity for each group of samples in the specified category.
+What was recorded from Step 6 and for the #### put in the number there.
+
+To view the alpha rarefaction plots, open the file `arare/alpha_rarefaction_plots/rarefaction_plots.html`. Once the browser window is open, select the `metric PD_whole_tree` and the category `Treatment`, to reveal a plot like the figure below. You can click on the triangle next to each label in the legend to see all the samples that contribute to that category. Below each plot is a table displaying average values for each measure of alpha diversity for each group of samples in the specified category.
 
 Select a metric: `PD_whole_tree` and Select a Category: `Treatment`
 ![Rarefaction Curves](Rarefaction Curves.png)
@@ -215,32 +214,27 @@ In addition to alpha (or within-sample) diversity, community ecologists are ofte
 
 Beta diversity represents the explicit comparison of microbial (or other) communities based on their composition. Beta diversity metrics thus assess the differences between microbial communities. The fundamental output of these comparisons is a square, hollow matrix where a “distance” or dissimilarity is calculated between every pair of community samples, reflecting the dissimilarity between those samples. The data in this distance matrix can be visualized with analyses such as Principal Coordinates Analysis (PCoA) and hierarchical clustering.
 
-Here, we will calculate beta diversity between our 9 microbial communities using the default beta diversity metrics of weighted and unweighted UniFrac, which are phylogenetic measures used extensively in recent microbial community sequencing projects. To perform this analysis, we will use the beta_diversity_through_plots.py workflow, which performs the following steps:
+Here, we will calculate beta diversity between our 3 microbial communities (P1/P2/P3) using the default beta diversity metrics of weighted and unweighted UniFrac, which are phylogenetic measures used extensively in recent microbial community sequencing projects. To perform this analysis, we will use the `beta_diversity_through_plots.py` workflow.
 
-* Rarefy OTU table to remove sampling depth heterogeneity (single_rarefaction.py)
-* Compute beta diversity (beta_diversity.py)
-* Run Principal Coordinates Analysis (principal_coordinates.py)
-* Generate Emperor PCoA plots (make_emperor.py)
-
-We can run the beta_diversity_through_plots.py workflow with the following command, which requires the OTU table (-i) and tree file (-t) from above, the metadata mapping file (-m), and the number of sequences per sample (-e, even sampling depth):
+We can run the `beta_diversity_through_plots.py` workflow with the following command, which requires the OTU table (-i) and tree file (-t) from above, the metadata mapping file (-m), and the number of sequences per sample (-e, even sampling depth):
 
 ```
 MacQIIME train12-osx:QIIME_analysis $ beta_diversity_through_plots.py -i otus/otu_table.biom -m watertest_Map.txt -t otus/rep_set.tre -e 100 -o betadiv_100
 ```
 Beta diversity metrics assess the differences between microbial communities. By default, QIIME calculates both weighted and unweighted UniFrac, which are phylogenetically-aware measures of beta diversity.
 
-The resulting distance matrices (bdiv_even146/unweighted_unifrac_dm.txt and bdiv_even146/weighted_unifrac_dm.txt) are the basis for further analyses and visualizations (e.g., Principal Coordinates Analysis and hierarchical clustering).
+The resulting distance matrix `bdiv_even100/unweighted_unifrac_pc.txt` is the basis for further analyses and visualizations.
 
 #### Step 11. Generate 3-D biplots for beta diversity
-We can add taxa from the taxonomy tables in the taxa_summary/ directory to a 3-D PCoA plot using Emperor’s `make_emperor.py`. The coordinates of a given taxon are plotted as a weighted average of the coordinates of all samples, where the weights are the relative abundances of the taxon in the samples. The **size of the sphere representing a taxon** is proportional to the mean relative abundance of the taxon across all samples. The following command creates a biplot displaying the 5 most abundant class-level taxa:
+We can add taxa from the taxonomy tables in the `taxa_summary/` directory to a 3-D PCoA plot using Emperor’s `make_emperor.py`. The coordinates of a given taxon are plotted as a weighted average of the coordinates of all samples, where the weights are the relative abundances of the taxon in the samples. The **size of the sphere representing a taxon** is proportional to the mean relative abundance of the taxon across all samples. The following command creates a biplot displaying the 5 most abundant class-level taxa:
 ```
 MacQIIME train12-osx:QIIME_analysis $ make_emperor.py -i betadiv_100/unweighted_unifrac_pc.txt -m watertest_Map.txt -t taxa_summary/otu_table_L5.txt --n_taxa_to_keep 10 -o biplots_betadiv_taxa10
 ```
-The resulting html file biplots/index.html opens up to EMPEROR inside the web browser. Go into the directory and open the `index.html` file. We will compare this to Figure 3C from the paper.
+The resulting html file biplots/index.html opens up to `EMPEROR` inside the web browser. Go into the directory and open the `index.html` file. We will compare this to Figure 3C from the paper.
 
 ![PCoA plot lab](pcoAPlot2.jpg)
 
-Total relative abundance of taxonomic groups (kingdom, phylum, class, family, and genus)
+Total relative abundance of taxonomic groups (kingdom, phylum, class, family, and genus -- FILE `otu_table_L5.txt` and lists the 10 taxa using `--n_taxa_to_keep`)
 
 _A. - k__Bacteria;p__Proteobacteria;c__Betaproteobacteria;o__Burkholderiales;Other_ 
 
