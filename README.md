@@ -7,4 +7,6 @@ We will use these pages for background and analysis:
 
 ![Data preparation](datapreparation.md) 
 
-![QIIME instructions](instructions.md)  
+![QIIME instructions](instructions.md)
+
+![Workshop links](Workshop_Information.md)
