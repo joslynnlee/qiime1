@@ -6,7 +6,7 @@ Don't hesitate to email me for anything you want to share or add in!
 
 David Asai - [Director of the undergraduate science education program](http://www.hhmi.org/news/hhmi-appoints-david-asai-undergraduate-science-education-program-director) at HHMI
 
-Clif Poodry - Senior Fellow for science education](http://www.hhmi.org/node/97545) at HHMI
+Clif Poodry - [Senior Fellow for science education](http://www.hhmi.org/node/97545) at HHMI
 
 #####National Science Foundation Research Experience for Undergraduates (REU)
 
