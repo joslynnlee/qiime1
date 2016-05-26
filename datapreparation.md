@@ -47,9 +47,9 @@ Read 22222 spots for SRR2146911.sra
 Written 22222 spots for SRR2146911.sra
 ```
 ####Converting a `.fastq` file to `.fna` file using macqiime script
-If you download the `.fastq` file, using `vi` to view the file would yield:
+If you download the `.fastq` file, using `less` to view the file would yield:
 ```
-$ vi SRR2146911.fastq
+$ less SRR2146911.fastq
 @SRR2146911.1 1 length=78
 ACGAGTGCGTTTAGATAACCTGGTAGCTAGCTCAGTACGAGACTGCCAAGGAAGTCGTAACAAGGTAACTAGCTCAGT
 +SRR2146911.1 1 length=78
@@ -75,6 +75,10 @@ Line 2 is the raw sequence letters.
 Line 3 begins with a '+' character and is optionally followed by the same sequence identifier (and any description) again.
 Line 4 encodes the quality values for the sequence in Line 2, and must contain the same number of symbols as letters in the sequence.
 ```
+From the information about, how many sequences are in the `.fastq` file?
+
+To exit out, use `q` to get out of the `less` mode.
+
 When macqiime is intialized, the script `convert_fastaqual_fastq.py` can be used to convert `.fastq` to `.fna.`and `.qual`. It breaks down the `.fastq` file into the two separate files.
 ```
 $ convert_fastaqual_fastq.py -c fastq_to_fastaqual -f SRR2146911.fastq -o SRR2146911
@@ -113,9 +117,9 @@ Column 4-6: description columns
 In the FAS Lopes paper, the forward primer was listed in the methods. The barcodes were taken from the .fastq files. The sample names were given based on the treatment group and replicate name. The description columns were listed based on information from the metadata associated from the SRA information.
 
 ####Look at the `.fna` and `.qual` formats
-Let's look at the `.fna` file by using `vi` that we learned earlier.
+Let's look at the `.fna` file by using `less` that we learned earlier.
 ```
-$ vi P1P2P3_wetdry.fna
+$ less P1P2P3_wetdry.fna
 >SRR2146911.1
 ACGAGTGCGTTTAGATAACCTGGTAGCTAGCTCAGTACGAGACTGCCAAGGAAGTCGTAACAAGGTAACTAGCTCAGT
 >SRR2146911.2
@@ -127,11 +131,11 @@ ACGAGTGCGTATTAGATACCCTGGTAGCTCAGTAAGTCGTAACAAGGTACCTAGCTCAGT
 >SRR2146911.5
 ACGAGTGCGTATTAGATACCCTGTAGCTCAGTAAGTCGTAACAAGGTAGCTAGCTCAGT
 ```
-To exit out, use `:q` to get out of the `vi` mode.
+To exit out, use `q` to get out of the `less` mode.
 
 Next we will check the format of the `.qual` file. Use the same exit, strategy.
 ```
-$ vi P1P2P3_rep1_wetdry.qual
+$ less P1P2P3_rep1_wetdry.qual
 >SRR2146911.1
 40 40 40 40 40 40 40 39 35 21 21 21 30 40 40 40 40 40 40 40 40 40 40 40 40 40 4$
 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40 40
