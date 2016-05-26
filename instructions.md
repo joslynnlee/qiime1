@@ -13,12 +13,12 @@ This QIIME analysis explains how to apply de novo OTU picking and diversity anal
 
 Here is a workflow to follow for the analysis we are going to perform:
 
-1. check input files
-2. check quality of the reads
+1. Check input files
+2. Check quality of the reads
 3. Demultiplex reads
 3. Build an OTU table (sequence similarity and assignments)
 4. Look at the taxonomic composition (whats in the sample)
-4. alpha and beta diversity
+4. Alpha and beta diversity
 
 #### Getting into your directory
 Here we will use commands that we learned in the earlier session to get into the directory (file) that holds our `.fna`, `.qual` and `mapping.txt` files. This directory will hold all files we will be using throughout the analysis. 
