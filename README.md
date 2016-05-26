@@ -1,7 +1,7 @@
 QIIME workflow
 Identifying the microbial community profile in a protected area of the Caatinga biome.
 
-We will use the two pages for analysis:
+We will use these pages for background and analysis:
 
 ![Genomics background](genomics.md)
 
