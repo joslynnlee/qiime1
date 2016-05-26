@@ -253,6 +253,9 @@ Parameter(s):
 -i	the input otu table [REQUIRED]
 -o	the output directory [REQUIRED]
 -m	path to the mapping file
+```
+Enter:
+```
 MacQIIME train12-osx:QIIME_analysis $ summarize_taxa_through_plots.py -i otus/otu_table.biom -m watertest_Map.txt -o taxa_summary
 ```
 The script will generate new tables at various taxonomic levels (we’ll refer to these as taxonomy tables, which are different than OTU tables). For example, the genus-level table is located at `taxa_summary/otu_table_L5.txt` and is Figure 3A from the paper. Each taxonomy table contains the relative abundances of taxa within each sample.
@@ -278,7 +281,8 @@ Let’s create a heatmap illustrating *class-level* abundances on a per-sample b
 -c 	Metadata category for sorting samples. Samples will be clustered within each category level using Euclidean UPGMA.
 -m	Metadata mapping file to be used for sorting Samples in the heatmap
 -o	the output filepath [REQUIRED]
-
+```
+```
 MacQIIME train12-osx:QIIME_analysis $ make_otu_heatmap.py -i taxa_summary/otu_table_L3.biom -c Treatment -m watertest_Map.txt -o taxa_summary/otu_table_L3_heatmap.pdf
 ```
 A PDF file is created as `taxa_summary/otu_table_L3_heatmap.pdf`. The first three samples are from WET season and the last three are from DRY season. This clearly illustrates class-level differences in the taxonomic composition of the samples.
