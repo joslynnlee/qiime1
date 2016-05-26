@@ -30,3 +30,11 @@ White House Office of Science and Technology Policy (OSTP), in collaboration wit
 Human Genome Project
 The Human Genome Project, which was led at the National Institutes of Health (NIH) by the National Human Genome Research Institute, produced a very high-quality version of the human genome sequence that is freely available in public databases. That international project was successfully completed in April 2003, under budget and more than two years ahead of schedule.
 Resource: [http://www.ncai.org/policy-research-center/initiatives/projects/genetics-resource-center](http://www.ncai.org/policy-research-center/initiatives/projects/genetics-resource-center)
+
+#####Looking for publications - Where do you go?
+[PubMed] (http://www.ncbi.nlm.nih.gov/pubmed)
+In the search bar, type:
+```
+microbiome
+```
+Let's add the search term arsenic and water. What happens?
