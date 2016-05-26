@@ -197,7 +197,7 @@ At this step, all of the sequences from all of the samples will be clustered int
 * Since each OTU may be made up of many related sequences, we will pick a representative sequence from each OTU for downstream analysis. This representative sequence will be used for taxonomic identification of the OTU.
 * Next, taxonomy will be assigned to each representative sequence.
 
-The method we will be using to build an OTU is the de novo OTU picking. Here, the reads are clustered against one another without any external reference sequence collection. `de novo OTU picking.py` is the primary interface for de novo OTU picking in QIIME.
+The method we will be using to build an OTU is the de novo OTU picking. Here, the reads are clustered against one another without any external reference sequence collection - [greengenes](http://greengenes.lbl.gov/cgi-bin/nph-index.cgi). `de novo OTU picking.py` is the primary interface for de novo OTU picking in QIIME.
 ```
 Parameter(s):
 -i	the input fasta file [REQUIRED]
