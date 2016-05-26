@@ -12,7 +12,13 @@ Go here for [data preparation](datapreparation.md) of the NCBI SRA samples.
 This QIIME analysis explains how to apply de novo OTU picking and diversity analysis to 16S amplicon data. In 1985, the National Park of Chapada Diamantina (PNCD) was created to prevent environmental degradation. The presence of bacteria capable of pesticide degradation and assimilation, evidencing possible anthropogenic impacts on the Caatinga. The data was collected to evaluate the effect of PNCD protection on the water quality and microbial community diversity of this river by analyzing water samples obtained from points located inside and outside the PNCD in both wet and dry seasons. We will be analyzing the data with a modified workflow for the workshop.
 
 Here is a workflow to follow for the analysis we are going to perform:
-(INSERT IMAGE OF WORKFLOW)
+
+1. check input files
+2. check quality of the reads
+3. Demultiplex reads
+3. Build an OTU table (sequence similarity and assignments)
+4. Look at the taxonomic composition (whats in the sample)
+4. alpha and beta diversity
 
 #### Getting into your directory
 Here we will use commands that we learned in the earlier session to get into the directory (file) that holds our `.fna`, `.qual` and `mapping.txt` files. This directory will hold all files we will be using throughout the analysis. 
