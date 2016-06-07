@@ -112,8 +112,11 @@ P3D.2	      CATAGTAGTG	    ATTAGATACCCNGGTAG	    Dry	        20130226	paraguacu_
 ```
 
 Column 1: name of each sample
+
 Column 2: the barcode sequence used for each sample
+
 Column 3: the linker/primer sequence used to amplify the sample
+
 Column 4-6: description columns
 
 In the FAS Lopes paper, the forward primer was listed in the methods. The barcodes were taken from the .fastq files. The sample names were given based on the treatment group and replicate name. The description columns were listed based on information from the metadata associated from the SRA information.
