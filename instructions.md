@@ -232,7 +232,7 @@ MacQIIME train12-osx:QIIME_analysis $ less otus/otu_table_stats.txt
 The first several lines of the `otu_table_stats.txt` have the number of raw input sequences and the total number seqs written. Write down the number of sequences before and after. 
 
 Another line to pay attention to the `Counts/Sample summary` line:
-````
+```
 Counts/sample summary:
  Min: 3369.0
  Max: 51312.0
